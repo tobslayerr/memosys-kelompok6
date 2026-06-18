@@ -1,0 +1,17 @@
+{
+  "name": "memosys",
+  "version": "1.0.0",
+  "description": "MEMOSYS adalah aplikasi dashboard simulasi berbasis web yang dirancang untuk memvisualisasikan cara kerja manajemen memori pada Sistem Operasi, khususnya teknik paging dan mekanisme Page Fault.",
+  "main": "index.js",
+  "scripts": { "dev": "vercel dev" },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.7.1"
+  }
+}
