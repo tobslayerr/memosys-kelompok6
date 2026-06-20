@@ -58,3 +58,28 @@ app.post('/api/allocate', async (req, res) => {
     await state.save();
     res.json({ success: true, state });
 });
+
+app.post('/api/deallocate', async (req, res) => {
+    await connectDB();
+    const { process_name } = req.body;
+    let state = await MemoryState.findOne();
+    
+    let freed = 0;
+    for (let frame of state.frames) {
+        if (frame.process_name === process_name) {
+            frame.is_free = true; frame.process_name = null; freed++;
+        }
+    }
+    
+    if(freed === 0) return res.status(404).json({success: false, message: `Proses [${process_name}] tidak ditemukan dalam RAM.`});
+    state.activity_logs.push({ action: "KILL_PROC", status: "success", message: `Proses [${process_name}] dihentikan. Membebaskan ${freed} frame.` });
+    await state.save();
+    res.json({ success: true, state });
+});
+
+app.get('/api/state', async (req, res) => {
+    await connectDB();
+    res.json(await MemoryState.findOne());
+});
+
+module.exports = app;
