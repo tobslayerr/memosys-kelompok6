@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMOSYS | Memory Management Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Lexend Deca', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    colors: { 
+                        base: '#0f0f11',    /* Abu-abu sangat gelap, tidak hitam murni */
+                        surface: '#18181b', /* Latar panel */
+                        line: '#3f3f46',    /* Border abu-abu terang */
+                        muted: '#a1a1aa',   /* Teks sekunder */
+                        accent: '#f4f4f5'   /* Teks utama putih/abu terang */
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: theme('colors.base'); color: theme('colors.accent'); font-family: theme('fontFamily.sans'); }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 4px; }
+        input, button { outline: none; transition: all 0.2s ease; }
+        input:focus { border-color: #a1a1aa; }
+        
+        .loader { border: 4px solid rgba(255,255,255,0.1); border-left-color: #3b82f6; border-radius: 50%; width: 44px; height: 44px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="h-screen w-full flex flex-col overflow-hidden antialiased">
+    
+    <div id="loadingOverlay" class="hidden fixed inset-0 bg-base/80 backdrop-blur-sm z-[60] flex flex-col items-center justify-center">
+        <div class="loader mb-4"></div>
+        <p class="text-sm font-mono text-muted uppercase tracking-wider">Memproses Data...</p>
+    </div>
+
+    <div id="modalOverlay" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+        <div class="bg-surface border border-line p-8 rounded-lg max-w-md w-full shadow-2xl">
+            <h3 id="modalTitle" class="text-xl font-bold mb-2">Pemberitahuan Sistem</h3>
+            <p id="modalMessage" class="text-muted text-sm mb-6 leading-relaxed">Pesan akan muncul di sini.</p>
+            <button onclick="hideModal()" class="w-full bg-white hover:bg-gray-200 text-black font-semibold py-3 rounded text-sm transition-colors">Tutup</button>
+        </div>
+    </div>
+
+    <header class="border-b border-line px-8 py-5 flex justify-between items-center shrink-0 bg-surface">
+        <div class="flex items-center gap-4">
+            <h1 class="text-2xl font-bold tracking-tight text-white leading-none">MEMOSYS</h1>
+            <span class="text-sm font-mono text-muted uppercase border-l border-line pl-4 ml-1">Kelompok 6</span>
+        </div>
+        <div class="flex gap-12 font-mono text-sm">
+            <div class="flex flex-col items-end">
+                <span class="text-muted uppercase mb-1">Page Faults</span>
+                <span id="stat-faults" class="text-red-400 font-bold text-2xl leading-none">0</span>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-muted uppercase mb-1">Available RAM</span>
+                <span id="stat-ram" class="text-emerald-400 font-bold text-2xl leading-none">0 KB</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        </main>
+    <script src="js/app.js"></script>
+</body>
+</html>
