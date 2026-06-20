@@ -31,3 +31,30 @@ app.post('/api/setup', async (req, res) => {
     await newState.save();
     res.json({ success: true, state: newState });
 });
+
+app.post('/api/allocate', async (req, res) => {
+    await connectDB();
+    const { process_name, size } = req.body;
+    let state = await MemoryState.findOne();
+    if(!state) return res.status(400).json({success: false, message: "Sistem belum diatur. Harap Format System terlebih dahulu."});
+
+    const pages_needed = Math.ceil(size / state.page_size);
+    let free_frames = state.frames.filter(f => f.is_free);
+
+    if (pages_needed > free_frames.length) {
+        state.page_faults += 1;
+        state.activity_logs.push({ action: "PAGE_FAULT", status: "error", message: `Alokasi [${process_name}] gagal. Membutuhkan ${pages_needed} frames, memori penuh.` });
+        await state.save();
+        return res.status(400).json({ success: false, message: "PAGE FAULT: Memori fisik tidak mencukupi untuk proses ini." });
+    }
+
+    let allocated = 0;
+    for (let frame of state.frames) {
+        if (frame.is_free && allocated < pages_needed) {
+            frame.is_free = false; frame.process_name = process_name; allocated++;
+        }
+    }
+    state.activity_logs.push({ action: "ALLOCATE", status: "success", message: `Alokasi ${size}KB memori untuk proses [${process_name}] berhasil.` });
+    await state.save();
+    res.json({ success: true, state });
+});
